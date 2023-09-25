@@ -1,0 +1,9 @@
+Empty:
+  Type: 'AWS::ApiGateway::Model'
+  Properties:
+    Name: Empty
+    RestApiId: 
+      Ref: ApiGateway
+    ContentType: application/json
+    Description: 'Response model for something'
+    Schema: ${file(serverless-files/api-gateway/models/schemas/empty-schema.json)}

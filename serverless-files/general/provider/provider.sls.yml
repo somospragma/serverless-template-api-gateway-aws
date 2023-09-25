@@ -1,0 +1,18 @@
+Provider:
+  name: aws
+  region: "us-east-1"
+  lambdaHashingVersion: 20201221
+  runtime: nodejs18.x
+  architecture: x86_64
+  stage: ${self:custom.stage}
+  stackTags:
+    Ambiente: ${self:custom.ambiente}
+    Disponibilidad: LU-DO-24:00
+    Despliegue: ServerlessFramework
+    Aplicativo: Portale Digitales 7eleven
+    Compania: ICONN
+    Producto: Transversal
+  deploymentBucket:
+    name: ${self:custom.bucket}
+    maxPreviousDeploymentArtifacts: 10
+    serverSideEncryption: AES256

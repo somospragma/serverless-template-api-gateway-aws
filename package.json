@@ -1,0 +1,15 @@
+{
+  "name": "api-gateway-aws-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "indes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1390.0",
+    "jwt-decode": "^2.2.0"
+  }
+}

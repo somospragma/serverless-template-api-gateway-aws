@@ -1,0 +1,8 @@
+Package:
+  patterns:
+    - src/**
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - serverless-files/api-gateway/**
+    - serverless-files/general/**

@@ -1,0 +1,14 @@
+CloudWatchRole:
+  Type: AWS::IAM::Role
+  Properties:
+    RoleName: Roles-apigateway-${self:custom.apiGatewayName}-${self:custom.stage}
+    AssumeRolePolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        Action: 'sts:AssumeRole'
+        Effect: Allow
+        Principal:
+          Service: apigateway.amazonaws.com
+    Path: /
+    ManagedPolicyArns:
+      - 'arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs'  

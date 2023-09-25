@@ -1,0 +1,14 @@
+Stage: 
+  Type: AWS::ApiGateway::Stage
+  Properties: 
+    DeploymentId: 
+      Ref: Deployment
+    RestApiId: 
+      Ref: ApiGateway
+    StageName: ${self:custom.stage}
+    Variables: 
+      Stage: ${self:custom.stage}  
+      StageName: ${self:custom.stage}
+      Name: ${self:custom.apiGatewayName}-${self:custom.stage} 
+     
+        

@@ -1,0 +1,7 @@
+CorsLambdaPermission:
+  Type: "AWS::Lambda::Permission"
+  Properties:
+    Action: lambda:InvokeFunction
+    FunctionName: 
+      Ref: CorsLambdaFunction # Hacer referencia al cloudformamtion no al serverless yml
+    Principal: apigateway.amazonaws.com

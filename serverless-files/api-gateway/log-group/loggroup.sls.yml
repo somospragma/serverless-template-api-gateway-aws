@@ -1,0 +1,5 @@
+LogGroup:
+  Type: AWS::Logs::LogGroup
+  Properties:
+    LogGroupName: apigateway-${self:custom.apiGatewayName}-${self:custom.stage}
+    RetentionInDays: 7

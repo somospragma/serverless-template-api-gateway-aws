@@ -1,0 +1,27 @@
+SecuritySchemes:
+  Customer_Repository:
+    type: apiKey
+    name: Authorization
+    in: header
+    x-amazon-apigateway-authtype: cognito_user_pools
+    x-amazon-apigateway-authorizer:
+      type: cognito_user_pools
+      providerARNs: 
+        - ${self:custom.userPoolArn}
+  Lambda_authorizer_pn:
+    type: apiKey
+    name: Authorization
+    in: header
+    x-amazon-apigateway-authtype: custom
+    x-amazon-apigateway-authorizer:
+      type: token
+      authorizerUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${AuthorizerLambdaFunction.Arn}/invocations
+      authorizerCredentials: !GetAtt AuthorizerPnIAMAPILambdaRole.Arn
+      IdentitySource: method.request.header.Authorization
+      identityValidationExpression: ^[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$
+      authorizerResultTtlInSeconds: 0       
+  sigv4:
+    type: apiKey
+    name: Authorization
+    in: header
+    x-amazon-apigateway-authtype: awsSigv4

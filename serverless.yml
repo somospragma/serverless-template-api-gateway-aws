@@ -1,0 +1,245 @@
+service: api-gateway-aws-template
+frameworkVersion: "3"
+useDotenv: true
+
+custom:
+  packageLimit: "10mb"
+  stage: ${opt:stage, env:stage}
+  ambiente: ${env:stage}
+  apiGatewayName: "LUGUIANT-DGT"
+  lmbdPrf: "func-dgt"
+  bucket: ${env:bucket}
+
+provider: ${file(serverless-files/general/provider/provider.sls.yml):Provider}
+
+package:
+  individually: true
+  excludeDevDependencies: true
+  exclude:
+    - ./**
+  include:
+    - src/**
+    - node_modules/**
+
+functions:
+  Cors:
+    memorySize: 128
+    name: ${self:custom.lmbdPrf}-${self:custom.stage}-cors-pn
+    handler: src/lambdas/cors.handler 
+
+resources:
+  Resources:
+    ApiGateway:
+      Type: AWS::ApiGateway::RestApi
+      Properties:
+        Description: Api rest que soporta sevicios de ${self:custom.apiGatewayName} en ${self:custom.stage}
+        Name: ${self:custom.apiGatewayName}-${self:custom.stage}
+        ApiKeySourceType: HEADER
+        MinimumCompressionSize: 1024
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+        Body:
+          openapi: "3.0.1"
+          info:
+            title: ${self:custom.apiGatewayName}-${self:custom.stage}
+            version: "2019-11-07T14:18:00Z"
+          components:
+            securitySchemes: ${file(serverless-files/api-gateway/components/securityschemes.sls.yml):SecuritySchemes}
+          x-amazon-apigateway-policy: ${file(serverless-files/api-gateway/apigatewaypolicy/apigateway-policy.sls.yml):ApiGatewayPolicy}
+          x-amazon-apigateway-binary-media-types:
+          - "*/*"
+
+    Deployment: ${file(serverless-files/api-gateway/deployment/deployment.sls.yml):Deployment}
+    CorsLambdaPermission: ${file(serverless-files/api-gateway/configlambdapermission/CorsLambdaPermission.sls.yml):CorsLambdaPermission}
+    ApiGwAccountConfig: ${file(serverless-files/api-gateway/apigwaccountconfig/apigwaccountconfig.sls.yml):ApiGwAccountConfig} # activar para poner logs y modificar la propiedad deployment
+    CloudWatchRole: ${file(serverless-files/api-gateway/cloudwatchrole/cloudwatchrole.sls.yml):CloudWatchRole}
+    LogGroupGateway: ${file(serverless-files/api-gateway/log-group/loggroup.sls.yml):LogGroup}
+    Empty: ${file(serverless-files/api-gateway/models/empty.sls.yml):Empty}  
+    Default4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: DEFAULT_4XX
+        RestApiId: 
+          Ref: ApiGateway
+    Default5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: DEFAULT_5XX
+        RestApiId: 
+          Ref: ApiGateway      
+    AccessDenied:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: ACCESS_DENIED
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '401'      
+    ApiConfigurationError:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: API_CONFIGURATION_ERROR
+        RestApiId: 
+          Ref: ApiGateway    
+        StatusCode: '500'   
+    AuthorizerConfigurationError:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: AUTHORIZER_CONFIGURATION_ERROR
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '500'                   
+    AuthorizerFailure:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: AUTHORIZER_FAILURE
+        RestApiId: 
+          Ref: ApiGateway  
+        StatusCode: '500'  
+    BREQUESTBODY:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: BAD_REQUEST_BODY
+        RestApiId: 
+          Ref: ApiGateway
+        StatusCode: '400'    
+    BADREQUESTPARAMETERS:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: BAD_REQUEST_PARAMETERS
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '400'     
+    EXPIREDTOKEN:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: EXPIRED_TOKEN
+        RestApiId: 
+          Ref: ApiGateway
+        StatusCode: '403'    
+    INTEGRATIONFAILURE:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: INTEGRATION_FAILURE
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '504'    
+    INTEGRATIONTIMEOUT:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: INTEGRATION_TIMEOUT
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '504'         
+    INVALIDAPIKEY:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: INVALID_API_KEY 
+        RestApiId: 
+          Ref: ApiGateway  
+        StatusCode: '403'     
+    INVALIDSIGNATURE:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: INVALID_SIGNATURE 
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '403'    
+    MISSINGAUTHENTICATIONTOKEN:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: MISSING_AUTHENTICATION_TOKEN 
+        RestApiId: 
+          Ref: ApiGateway   
+        StatusCode: '403'  
+    QUOTAEXCEEDED:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: QUOTA_EXCEEDED 
+        RestApiId: 
+          Ref: ApiGateway  
+        StatusCode: '429'   
+    REQUESTTOOLARGE:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: REQUEST_TOO_LARGE  
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '413'       
+    RESOURCENOTFOUND:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: RESOURCE_NOT_FOUND   
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '404'      
+    THROTTLED:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: THROTTLED    
+        RestApiId: 
+          Ref: ApiGateway  
+        StatusCode: '429'           
+    UNAUTHORIZED:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: UNAUTHORIZED    
+        RestApiId: 
+          Ref: ApiGateway
+        StatusCode: '401'      
+    UNSUPPORTEDMEDIATYPE:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: UNSUPPORTED_MEDIA_TYPE    
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '415'     
+    WAFFILTERED:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters: ${file(serverless-files/api-gateway/gatewayresponse/responseParameters.sls.yml):GatewayResponse}
+        ResponseType: WAF_FILTERED    
+        RestApiId: 
+          Ref: ApiGateway 
+        StatusCode: '415'                                             
+
+  Outputs:
+    apiGatewayRestApiId:
+      Value:
+        Ref: ApiGateway
+      Export:
+        Name: ApiGatewayDgtPn-restApiId
+    apiGatewayRestApiName:
+      Value: ${self:custom.apiGatewayName}-${self:custom.stage}
+      Export:
+        Name: ApiGatewayDgtPn-name
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGateway
+          - RootResourceId
+      Export:
+        Name: ApiGatewayDgtPn-rootResourceId
+      
+   
+    

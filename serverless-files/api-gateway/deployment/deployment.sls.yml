@@ -1,0 +1,23 @@
+Deployment:
+  Type: AWS::ApiGateway::Deployment
+  Properties: 
+    RestApiId: 
+      Ref: ApiGateway
+    Description: Despliegue en api-gateway ${self:custom.apiGatewayName} en ${self:custom.stage} 
+    StageDescription:
+      Description: Stage 
+      ThrottlingBurstLimit: 5000
+      ThrottlingRateLimit: 10000
+      TracingEnabled: true
+      MethodSettings:
+        - ResourcePath: "/*"
+          HttpMethod: "*"
+          LoggingLevel: INFO
+      AccessLogSetting:
+        DestinationArn: 
+          Fn::GetAtt:
+            - LogGroupGateway
+            - Arn 
+        Format: $context.extendedRequestId $context.identity.sourceIp $context.identity.caller $context.identity.user [$context.requestTime] "$context.httpMethod $context.resourcePath $context.protocol" $context.status $context.responseLength $context.requestId  
+    StageName: ${self:custom.stage}
+    

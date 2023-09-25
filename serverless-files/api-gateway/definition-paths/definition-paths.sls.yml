@@ -1,0 +1,82 @@
+DefinitionPaths:
+## api-digital-auth
+  /web/api-digital-auth/{proxy+}:                           ${file(serverless-files/api-gateway/paths/api-digital-auth/api-digital-auth.sls.yml):DataConfigPath}
+  
+## api-digital-auth
+  /web/api-mobile-auth/{proxy+}:                           ${file(serverless-files/api-gateway/paths/api-mobile-auth/api-mobile-auth.sls.yml):DataConfigPath}
+
+  /web/api-cms/{proxy+}: ${file(serverless-files/api-gateway/paths/api-cms.sls.yml):ApiCms}
+  /web/api-disclaimers/{proxy+}: ${file(serverless-files/api-gateway/paths/api-disclaimers.sls.yml):ApiDisclaimers}
+  /web/catalogo/{proxy+}: ${file(serverless-files/api-gateway/paths/api-catalogo.sls.yml):Catalogo}
+
+## Api-complience
+  /portal/api-compliance/{proxy+}: ${file(serverless-files/api-gateway/paths/api-compliance/api-compliance.sls.yml):DataConfigPath}
+
+## Api-mobile-client-restriction
+  /portal/api-mobile-client-restriction/causal: ${file(serverless-files/api-gateway/paths/api-mobile-client-restriction/causal.sls.yml):DataConfigPath}
+
+## api-digital-user-data
+  /portal/api-digital-user-data/get-user-data: ${file(serverless-files/api-gateway/paths/api-digital-user-data/get-user-data.sls.yml):DataConfigPath}
+  /portal/api-digital-user-data/close-session: ${file(serverless-files/api-gateway/paths/api-digital-user-data/close-session.sls.yml):DataConfigPath}
+  
+## api-mobile-user-data  
+  /portal/api-mobile-user-data/get-user-data: ${file(serverless-files/api-gateway/paths/api-mobile-user-data/get-user-data.sls.yml):DataConfigPath}
+  /portal/api-mobile-user-data/close-session: ${file(serverless-files/api-gateway/paths/api-mobile-user-data/close-session.sls.yml):DataConfigPath}
+
+## api-access-login
+  /portal/api-access-login: ${file(serverless-files/api-gateway/paths/api-access-login/api-access-login.sls.yml):DataConfigPath}
+  /portal/api-access-login/save-access: ${file(serverless-files/api-gateway/paths/api-access-login/save-access.sls.yml):DataConfigPath}
+  /portal/api-access-login/get-access:  ${file(serverless-files/api-gateway/paths/api-access-login/get-access.sls.yml):DataConfigPath}
+ 
+## api-customer-position
+  /portal/api-customer-position/{proxy+}: ${file(serverless-files/api-gateway/paths/api-customer-position/api-customer-position.sls.yml):DataConfigPath}
+
+## api-customer-internal
+  /portal/api-customer-internal/{proxy+}:               ${file(serverless-files/api-gateway/paths/api-customer-internal/api-customer-internal.sls.yml):DataConfigPath}
+
+## api-customer-profile
+  /portal/api-customer-profile/{proxy+}:       ${file(serverless-files/api-gateway/paths/api-customer-profile/api-customer-profile.sls.yml):DataConfigPath}
+
+## api-customer
+  /portal/api-customer/{proxy+}:        ${file(serverless-files/api-gateway/paths/api-customer/api-customer.sls.yml):DataConfigPath}
+
+## api-documents  
+  /portal/api-documents:      ${file(serverless-files/api-gateway/paths/api-documents/api-documents.sls.yml):DataConfigPath} 
+  /portal/api-documents/v2.0: ${file(serverless-files/api-gateway/paths/api-documents/v2.sls.yml):DataConfigPath} 
+  /portal/api-documents/document-metadata: ${file(serverless-files/api-gateway/paths/api-documents/document-metadata.sls.yml):DataConfigPath} 
+
+## api-formats 
+  /portal/api-formats/get-pdf-model:           ${file(serverless-files/api-gateway/paths/api-formats/get-pdf-model.sls.yml):DataConfigPath} 
+  /portal/api-formats/get-pdf-key-value:       ${file(serverless-files/api-gateway/paths/api-formats/get-pdf-key-value.sls.yml):DataConfigPath} 
+  /portal/api-formats/get-xls:                 ${file(serverless-files/api-gateway/paths/api-formats/get-xls.sls.yml):DataConfigPath} 
+  /portal/api-formats/generate-tx-certificate: ${file(serverless-files/api-gateway/paths/api-formats/generate-tx-certificate.sls.yml):DataConfigPath} 
+  
+## api-formats   
+  /portal/api-foreign-exchange/token: ${file(serverless-files/api-gateway/paths/api-foreign-exchange/token.sls.yml):DataConfigPath}
+
+## api-integrations  
+  /portal/api-integrations/{proxy+}:                 ${file(serverless-files/api-gateway/paths/api-integrations/api-integrations.sls.yml):DataConfigPath} 
+ 
+## api-movements 
+  /portal/api-movements/{proxy+}:      ${file(serverless-files/api-gateway/paths/api-movements/api-movements.sls.yml):DataConfigPath} 
+
+## api-notifications
+  /portal/api-notifications/send-email-pension-requeriments: ${file(serverless-files/api-gateway/paths/api-notifications/send-email-pension-requeriments.sls.yml):DataConfigPath}
+
+## api-payment
+  /portal/api-payment/{proxy+}:                      ${file(serverless-files/api-gateway/paths/api-payment/api-payment.sls.yml):DataConfigPath}
+
+## api-profitability
+  /portal/api-profitability: ${file(serverless-files/api-gateway/paths/api-profitability/api-profitability.sls.yml):DataConfigPath}
+
+## api-transactions-bank
+  /portal/api-transactions-bank/{proxy+}:         ${file(serverless-files/api-gateway/paths/api-transactions-bank/api-transactions-bank.sls.yml):DataConfigPath}
+
+## api-transactions-bank
+  /portal/api-transactions-commissioner/{proxy+}:                   ${file(serverless-files/api-gateway/paths/api-transactions-commissioner/api-transactions-commissioner.sls.yml):DataConfigPath}
+
+## api-transactions-bank
+  /portal/api-transactions-fpv/{proxy+}:                          ${file(serverless-files/api-gateway/paths/api-transactions-fpv/api-transactions-fpv.sls.yml):DataConfigPath}
+
+## api-notifications
+  /api-notification/totp: ${file(serverless-files/api-gateway/paths/api-notification.sls.yml):ApiNotification}
